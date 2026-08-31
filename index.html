@@ -278,7 +278,7 @@
 
                             <div class="space-y-2.5">
                                 <label class="cursor-pointer block">
-                                    <input type="radio" name="selectedRobotCandidate" value="1" checked onchange="updateRobotPreview()" class="peer sr-only">
+                                    <input type="radio" name="selectedRobotCandidate" value="1" checked onchange="updateRobotPreview(true)" class="peer sr-only">
                                     <div class="p-3.5 rounded-xl bg-white border border-slate-300 peer-checked:border-senac-orange peer-checked:bg-orange-50/60 peer-checked:ring-1 peer-checked:ring-senac-orange transition flex items-center justify-between shadow-sm">
                                         <div class="flex items-center gap-3">
                                             <span class="w-8 h-8 rounded-lg bg-sky-100 text-senac-blue flex items-center justify-center font-bold text-xs font-display">01</span>
@@ -292,7 +292,7 @@
                                 </label>
 
                                 <label class="cursor-pointer block">
-                                    <input type="radio" name="selectedRobotCandidate" value="2" onchange="updateRobotPreview()" class="peer sr-only">
+                                    <input type="radio" name="selectedRobotCandidate" value="2" onchange="updateRobotPreview(true)" class="peer sr-only">
                                     <div class="p-3.5 rounded-xl bg-white border border-slate-300 peer-checked:border-senac-orange peer-checked:bg-orange-50/60 peer-checked:ring-1 peer-checked:ring-senac-orange transition flex items-center justify-between shadow-sm">
                                         <div class="flex items-center gap-3">
                                             <span class="w-8 h-8 rounded-lg bg-orange-100 text-senac-orange flex items-center justify-center font-bold text-xs font-display">02</span>
@@ -306,7 +306,7 @@
                                 </label>
 
                                 <label class="cursor-pointer block">
-                                    <input type="radio" name="selectedRobotCandidate" value="3" onchange="updateRobotPreview()" class="peer sr-only">
+                                    <input type="radio" name="selectedRobotCandidate" value="3" onchange="updateRobotPreview(true)" class="peer sr-only">
                                     <div class="p-3.5 rounded-xl bg-white border border-slate-300 peer-checked:border-senac-orange peer-checked:bg-orange-50/60 peer-checked:ring-1 peer-checked:ring-senac-orange transition flex items-center justify-between shadow-sm">
                                         <div class="flex items-center gap-3">
                                             <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs font-display">03</span>
@@ -320,7 +320,7 @@
                                 </label>
 
                                 <label class="cursor-pointer block">
-                                    <input type="radio" name="selectedRobotCandidate" value="4" onchange="updateRobotPreview()" class="peer sr-only">
+                                    <input type="radio" name="selectedRobotCandidate" value="4" onchange="updateRobotPreview(true)" class="peer sr-only">
                                     <div class="p-3.5 rounded-xl bg-white border border-slate-300 peer-checked:border-senac-orange peer-checked:bg-orange-50/60 peer-checked:ring-1 peer-checked:ring-senac-orange transition flex items-center justify-between shadow-sm">
                                         <div class="flex items-center gap-3">
                                             <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs font-display">04</span>
@@ -334,7 +334,7 @@
                                 </label>
 
                                 <label class="cursor-pointer block">
-                                    <input type="radio" name="selectedRobotCandidate" value="5" onchange="updateRobotPreview()" class="peer sr-only">
+                                    <input type="radio" name="selectedRobotCandidate" value="5" onchange="updateRobotPreview(true)" class="peer sr-only">
                                     <div class="p-3.5 rounded-xl bg-white border border-slate-300 peer-checked:border-senac-orange peer-checked:bg-orange-50/60 peer-checked:ring-1 peer-checked:ring-senac-orange transition flex items-center justify-between shadow-sm">
                                         <div class="flex items-center gap-3">
                                             <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xs font-display">05</span>
@@ -348,7 +348,7 @@
                                 </label>
 
                                 <label class="cursor-pointer block">
-                                    <input type="radio" name="selectedRobotCandidate" value="6" onchange="updateRobotPreview()" class="peer sr-only">
+                                    <input type="radio" name="selectedRobotCandidate" value="6" onchange="updateRobotPreview(true)" class="peer sr-only">
                                     <div class="p-3.5 rounded-xl bg-white border border-slate-300 peer-checked:border-senac-orange peer-checked:bg-orange-50/60 peer-checked:ring-1 peer-checked:ring-senac-orange transition flex items-center justify-between shadow-sm">
                                         <div class="flex items-center gap-3">
                                             <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs font-display">06</span>
@@ -392,11 +392,11 @@
                     <div class="w-full bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm text-center">
                         <span class="text-xs text-slate-500 font-medium block">Iluminação LED do Robô Mascote</span>
                         <div class="flex items-center justify-center gap-3 pt-1">
-                            <button onclick="setRobotColor('#006ccb')" class="w-7 h-7 rounded-full bg-[#006ccb] ring-2 ring-slate-200 hover:scale-110 transition shadow-sm"></button>
-                            <button onclick="setRobotColor('#F37021')" class="w-7 h-7 rounded-full bg-[#F37021] ring-2 ring-slate-200 hover:scale-110 transition shadow-sm"></button>
-                            <button onclick="setRobotColor('#10b981')" class="w-7 h-7 rounded-full bg-[#10b981] ring-2 ring-slate-200 hover:scale-110 transition shadow-sm"></button>
-                            <button onclick="setRobotColor('#a855f7')" class="w-7 h-7 rounded-full bg-[#a855f7] ring-2 ring-slate-200 hover:scale-110 transition shadow-sm"></button>
-                            <button onclick="setRobotColor('#e11d48')" class="w-7 h-7 rounded-full bg-[#e11d48] ring-2 ring-slate-200 hover:scale-110 transition shadow-sm"></button>
+                            <button type="button" onclick="setRobotColor('#006ccb')" class="w-7 h-7 rounded-full bg-[#006ccb] ring-2 ring-slate-200 hover:scale-125 transition-transform shadow-sm active:scale-95"></button>
+                            <button type="button" onclick="setRobotColor('#F37021')" class="w-7 h-7 rounded-full bg-[#F37021] ring-2 ring-slate-200 hover:scale-125 transition-transform shadow-sm active:scale-95"></button>
+                            <button type="button" onclick="setRobotColor('#10b981')" class="w-7 h-7 rounded-full bg-[#10b981] ring-2 ring-slate-200 hover:scale-125 transition-transform shadow-sm active:scale-95"></button>
+                            <button type="button" onclick="setRobotColor('#a855f7')" class="w-7 h-7 rounded-full bg-[#a855f7] ring-2 ring-slate-200 hover:scale-125 transition-transform shadow-sm active:scale-95"></button>
+                            <button type="button" onclick="setRobotColor('#e11d48')" class="w-7 h-7 rounded-full bg-[#e11d48] ring-2 ring-slate-200 hover:scale-125 transition-transform shadow-sm active:scale-95"></button>
                         </div>
                     </div>
                 </div>
@@ -590,7 +590,7 @@
             votedId: null
         };
 
-        let activeRobotColor = '#F37021';
+        let activeRobotColor = '#006ccb';
 
         // Sugestões pré-cadastradas para facilitar a escolha dos supervisores
         let suggestions = [
@@ -675,7 +675,7 @@
             updateGlobalCounters();
             renderVotingCards();
             renderRanking();
-            updateRobotPreview();
+            updateRobotPreview(true);
             renderHoloSvg();
             initConfetti();
         });
@@ -754,14 +754,19 @@
 
         function setRobotColor(hex) {
             activeRobotColor = hex;
-            updateRobotPreview();
+            updateRobotPreview(false);
             renderHoloSvg();
+            showToast("Cor dos LEDs do robô alterada!", "fa-lightbulb", hex);
         }
 
-        function updateRobotPreview() {
+        function updateRobotPreview(isRadioChange = false) {
             const selectedId = parseInt(document.querySelector('input[name="selectedRobotCandidate"]:checked')?.value || '1');
             const candidate = suggestions.find(s => s.id === selectedId) || suggestions[0];
             
+            if (isRadioChange && candidate.color) {
+                activeRobotColor = candidate.color;
+            }
+
             const titleEl = document.getElementById('previewRobotTitle');
             if (titleEl) titleEl.innerText = candidate.name;
 
@@ -770,7 +775,7 @@
             
             const container = document.getElementById('svgRobotContainer');
             if(container) {
-                container.innerHTML = generateRobotSVG(candidate.color || activeRobotColor, candidate.name);
+                container.innerHTML = generateRobotSVG(activeRobotColor, candidate.name);
             }
         }
 
