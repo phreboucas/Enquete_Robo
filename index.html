@@ -174,11 +174,6 @@
                 <span>Placar ao Vivo</span>
             </button>
 
-            <button onclick="switchTab('ai-helper')" id="tab-ai-helper" class="tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition flex items-center gap-2 text-slate-600 hover:text-senac-blue hover:bg-slate-200/60">
-                <i class="fa-solid fa-wand-magic-sparkles text-senac-orange"></i>
-                <span>Gerador IA NTE</span>
-            </button>
-
             <button onclick="switchTab('holo')" id="tab-holo" class="tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition flex items-center gap-2 text-slate-600 hover:text-senac-blue hover:bg-slate-200/60">
                 <i class="fa-solid fa-vr-cardboard"></i>
                 <span>Holograma</span>
@@ -490,46 +485,7 @@
             </div>
         </section>
 
-        <!-- TAB 4: GERADOR DE IDEIAS COM IA -->
-        <section id="view-ai-helper" class="tab-view hidden space-y-6">
-            <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm relative overflow-hidden">
-                <div class="max-w-2xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 text-senac-blue border border-sky-200 text-xs font-bold uppercase tracking-wider mb-3">
-                        <i class="fa-solid fa-wand-magic-sparkles text-senac-orange"></i>
-                        Inteligência Artificial do NTE
-                    </div>
-                    <h2 class="text-2xl font-bold font-display text-senac-blue">Assistente de Nomes Pedagógicos</h2>
-                    <p class="text-sm text-slate-600 mt-1">
-                        Bloqueou a criatividade? Use nossa inteligência artificial para inspirar nomes com base na missão do Senac Ceará, inovação e educação do futuro.
-                    </p>
-                </div>
-
-                <div class="mt-6 bg-white p-5 rounded-xl border border-slate-200 space-y-4 shadow-sm">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Palavras-chave ou Valores para Inspirar a IA</label>
-                        <input type="text" id="aiKeywordsInput" placeholder="Ex: Cordel, Inovação, Futuro, Ceará, Aprendizado, Conectividade..."
-                            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-senac-orange text-sm">
-                    </div>
-
-                    <button onclick="generateAINames()" id="aiGenerateBtn" class="w-full sm:w-auto bg-gradient-to-r from-senac-blue to-sky-600 hover:from-sky-600 hover:to-senac-blue text-white font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-senac-blue/20">
-                        <i class="fa-solid fa-brain"></i>
-                        Gerar Ideias com IA do NTE
-                    </button>
-                </div>
-
-                <!-- Resultados Gerados pela IA -->
-                <div id="aiResultsContainer" class="mt-8 hidden space-y-4">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-lightbulb text-amber-500"></i> Sugestões Geradas pela IA:
-                    </h3>
-                    <div id="aiCardsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Cards injetados via JS -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 5: HOLOGRAMA INTERATIVO DO ROBÔ -->
+        <!-- TAB 4: HOLOGRAMA INTERATIVO DO ROBÔ -->
         <section id="view-holo" class="tab-view hidden space-y-6">
             <div class="bg-gradient-to-b from-sky-50 to-white rounded-2xl p-8 border border-slate-200 text-center flex flex-col items-center justify-center min-h-[500px] relative overflow-hidden shadow-sm">
 
@@ -1064,105 +1020,6 @@
                     `;
                 }).join('');
             }
-        }
-
-        async function generateAINames() {
-            const keywords = document.getElementById('aiKeywordsInput')?.value?.trim() || 'Inovação, Educação Profissional, Ceará, Futuro';
-            const btn = document.getElementById('aiGenerateBtn');
-            const container = document.getElementById('aiResultsContainer');
-            const grid = document.getElementById('aiCardsGrid');
-
-            if (!btn || !container || !grid) return;
-
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Gerando Ideias no NTE...`;
-
-            const systemPrompt = `Você é um assistente especialista em naming pedagógico e tecnologia educacional para o Senac Ceará. 
-Crie 3 propostas de nomes curtos e marcantes para um robô mascote pedagógico do NTE.
-Retorne um JSON contendo uma lista com exatamente 3 objetos. Cada objeto deve possuir as chaves: "name", "justification" e "trait".`;
-
-            const userPrompt = `Gere 3 sugestões criativas de nomes baseados em: ${keywords}. Faça jus à educação do Senac no Ceará.`;
-
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userPrompt }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] },
-                        generationConfig: {
-                            responseMimeType: "application/json",
-                            responseSchema: {
-                                type: "ARRAY",
-                                items: {
-                                    type: "OBJECT",
-                                    properties: {
-                                        "name": { "type": "STRING" },
-                                        "justification": { "type": "STRING" },
-                                        "trait": { "type": "STRING" }
-                                    },
-                                    required: ["name", "justification", "trait"]
-                                }
-                            }
-                        }
-                    })
-                });
-
-                const data = await response.json();
-                const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (jsonText) {
-                    const parsed = JSON.parse(jsonText);
-                    grid.innerHTML = parsed.map(item => `
-                        <div class="glass-card p-4 rounded-xl border border-sky-200 flex flex-col justify-between shadow-sm">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-bold text-lg text-senac-blue font-display">${item.name}</h4>
-                                    <span class="text-[10px] bg-sky-100 text-senac-blue px-2 py-0.5 rounded-full border border-sky-200">${item.trait}</span>
-                                </div>
-                                <p class="text-xs text-slate-600 mb-4 italic leading-relaxed">"${item.justification}"</p>
-                            </div>
-                            <button onclick="useAISuggestion('${item.name.replace(/'/g, "\\'")}', '${item.justification.replace(/'/g, "\\'")}', '${item.trait}')" 
-                                class="w-full bg-senac-blue hover:bg-sky-700 text-white font-bold text-xs py-2 rounded-lg transition flex items-center justify-center gap-1 shadow-sm">
-                                <i class="fa-solid fa-copy"></i> Usar esta Ideia
-                            </button>
-                        </div>
-                    `).join('');
-                    
-                    container.classList.remove('hidden');
-                    showToast("Ideias geradas com sucesso pela IA!", "fa-brain", "#006ccb");
-                }
-            } catch (err) {
-                console.error("Erro ao chamar Gemini:", err);
-                // Fallback Mock em caso de instabilidade
-                grid.innerHTML = `
-                    <div class="glass-card p-4 rounded-xl border border-sky-200 shadow-sm">
-                        <h4 class="font-bold text-lg text-senac-blue font-display">SertãoTech</h4>
-                        <p class="text-xs text-slate-600 my-2">Unindo o conhecimento do sertão cearense com metodologias ativas digitais.</p>
-                        <button onclick="useAISuggestion('SertãoTech', 'Unindo o conhecimento do sertão cearense com metodologias ativas digitais.', 'Inovador')" class="w-full bg-senac-blue text-white font-bold text-xs py-2 rounded-lg">Usar esta Ideia</button>
-                    </div>
-                `;
-                container.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-brain"></i> Gerar Ideias com IA do NTE`;
-            }
-        }
-
-        function useAISuggestion(name, justification, trait) {
-            switchTab('suggest');
-            const matchingCandidate = suggestions.find(s => s.name.toLowerCase() === name.toLowerCase());
-            if (matchingCandidate) {
-                const radio = document.querySelector(`input[name="selectedRobotCandidate"][value="${matchingCandidate.id}"]`);
-                if (radio) {
-                    radio.checked = true;
-                    updateRobotPreview();
-                }
-            }
-            showToast(`Ideia de nome "${name}" ativada!`, "fa-magic", "#006ccb");
         }
 
         function triggerRobotSpeech() {
