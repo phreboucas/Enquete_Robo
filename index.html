@@ -46,7 +46,6 @@
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        /* Glassmorphism utility for light background */
         .glass-panel {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
@@ -67,16 +66,6 @@
             box-shadow: 0 12px 25px -5px rgba(0, 69, 130, 0.1);
         }
 
-        /* Glow effects adjusted for light theme */
-        .glow-orange {
-            box-shadow: 0 0 20px rgba(243, 112, 33, 0.2);
-        }
-
-        .glow-blue {
-            box-shadow: 0 0 20px rgba(0, 69, 130, 0.15);
-        }
-
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -91,7 +80,6 @@
             background: #F37021;
         }
 
-        /* Keyframes */
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-8px) rotate(1deg); }
@@ -110,7 +98,6 @@
             animation: pulseGlow 3s ease-in-out infinite;
         }
 
-        /* Confetti canvas overlay */
         #confettiCanvas {
             position: fixed;
             top: 0;
@@ -128,7 +115,7 @@
 
     <!-- Header Principal -->
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 lg:px-8 py-3 shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
             <!-- Logo & Brand -->
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-senac-blue to-senac-orange flex items-center justify-center p-0.5 shadow-md">
@@ -139,18 +126,28 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-display font-bold text-lg text-senac-blue tracking-tight">NTE<span class="text-senac-orange">.Bot</span></span>
-                        <span class="text-[10px] bg-sky-100 text-senac-blue font-semibold px-2 py-0.5 rounded-full border border-sky-200 uppercase tracking-wider">Senac Ceará</span>
+                        <span class="text-[10px] bg-sky-100 text-senac-blue font-semibold px-2 py-0.5 rounded-full border border-sky-200 uppercase tracking-wider hidden sm:inline-block">Senac Ceará</span>
+                        <!-- Status Badge de Nuvem -->
+                        <span id="syncStatusBadge" class="hidden items-center gap-1.5 text-[11px] bg-emerald-100 text-emerald-700 font-semibold px-2.5 py-0.5 rounded-full border border-emerald-200">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Ao Vivo na Nuvem
+                        </span>
                     </div>
                     <p class="text-xs text-slate-500">Eleição da Mascote Pedagógica</p>
                 </div>
             </div>
 
-            <!-- Profile Badge & Unit -->
-            <div class="flex items-center gap-3">
+            <!-- Profile Badge & WhatsApp Share -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="shareOnWhatsApp()" title="Compartilhar no WhatsApp" class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-bold transition shadow-sm">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span class="hidden md:inline">Compartilhar no Grupo</span>
+                </button>
+
                 <button onclick="openSupervisorModal()" id="supervisorBtn" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-full text-xs font-medium transition text-slate-700">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <i class="fa-solid fa-user-gear text-senac-orange"></i>
-                    <span id="currentSupervisorName">Identificação: Supervisão</span>
+                    <span id="currentSupervisorName" class="truncate max-w-[140px] sm:max-w-none">Identificação: Colaborador</span>
                 </button>
             </div>
         </div>
@@ -193,7 +190,7 @@
                 <div class="max-w-2xl text-center md:text-left">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-xs font-bold uppercase tracking-wider mb-3">
                         <i class="fa-solid fa-sparkles text-amber-300"></i>
-                        Supervisão Pedagógica NTE
+                        Núcleo de Tecnologia Educacional
                     </div>
                     <h1 class="text-2xl md:text-4xl font-extrabold font-display tracking-tight leading-tight">
                         Eleição Oficial do Robô Mascote <span class="text-amber-300">NTE Senac Ceará</span>
@@ -210,7 +207,7 @@
                     </div>
                     <div class="text-center px-3 border-r border-white/20">
                         <span id="totalVotesCount" class="block text-2xl font-bold font-display text-sky-200">0</span>
-                        <span class="text-[10px] text-slate-100 uppercase tracking-wider">Votos Computados</span>
+                        <span class="text-[10px] text-slate-100 uppercase tracking-wider">Votos Ao Vivo</span>
                     </div>
                     <div class="text-center px-3">
                         <span id="unitsParticipating" class="block text-2xl font-bold font-display text-emerald-300">14</span>
@@ -220,19 +217,19 @@
             </div>
         </div>
 
-        <!-- TAB 1: SELEÇÃO E VOTAÇÃO DA SUPERVISÃO -->
+        <!-- TAB 1: SELEÇÃO E VOTAÇÃO DO COLABORADOR -->
         <section id="view-suggest" class="tab-view block space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
-                <!-- Formulário de Votação da Supervisão -->
+                <!-- Formulário de Votação do Colaborador -->
                 <div class="lg:col-span-7 bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm relative">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 rounded-lg bg-senac-orange/10 border border-senac-orange/30 flex items-center justify-center text-senac-orange font-bold">
                             <i class="fa-solid fa-vote-yea"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold font-display text-senac-blue">Identificação e Votação da Supervisão</h2>
-                            <p class="text-xs text-slate-500">Informe os dados da supervisão e escolha uma das opções de nome</p>
+                            <h2 class="text-xl font-bold font-display text-senac-blue">Identificação e Votação do Colaborador</h2>
+                            <p class="text-xs text-slate-500">Informe os dados do colaborador e escolha uma das opções de nome</p>
                         </div>
                     </div>
 
@@ -240,9 +237,9 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                                    Identificação da Supervisão <span class="text-senac-orange">*</span>
+                                    Identificação do Colaborador <span class="text-senac-orange">*</span>
                                 </label>
-                                <input type="text" id="supervisorNameInput" required placeholder="Ex: Supervisão Pedagógica"
+                                <input type="text" id="supervisorNameInput" required placeholder="Ex: Nome do Colaborador"
                                     class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-senac-orange text-sm shadow-sm">
                             </div>
 
@@ -263,7 +260,6 @@
                                     <option value="Juazeiro do Norte">Juazeiro do Norte</option>
                                     <option value="Maranguape">Maranguape</option>
                                     <option value="Quixadá">Quixadá</option>
-
                                     <option value="Senac Panorama">Senac Panorama</option>
                                     <option value="Sobral">Sobral</option>
                                     <option value="NTE Central">NTE Central</option>
@@ -367,7 +363,7 @@
                         <div class="pt-2 flex gap-3">
                             <button type="submit" class="flex-1 bg-gradient-to-r from-senac-orange to-amber-500 hover:from-amber-500 hover:to-senac-orange text-white font-bold py-3.5 px-6 rounded-xl shadow-md shadow-senac-orange/20 transition transform active:scale-95 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-paper-plane"></i>
-                                Registrar Voto Oficial da Supervisão
+                                Registrar Voto Oficial do Colaborador
                             </button>
                         </div>
                     </form>
@@ -410,11 +406,11 @@
             <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
                 <div>
                     <h2 class="text-xl font-bold font-display text-senac-blue">Votação de Nomes para o Robô</h2>
-                    <p class="text-xs text-slate-500">Avalie as ideias das supervisões e vote na sua preferida</p>
+                    <p class="text-xs text-slate-500">Avalie as opções e acompanhe os votos da equipe em tempo real</p>
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <input type="text" id="searchVoteInput" oninput="renderVotingCards()" placeholder="Buscar nome ou supervisão..." 
+                    <input type="text" id="searchVoteInput" oninput="renderVotingCards()" placeholder="Buscar nome ou opção..." 
                         class="bg-white border border-slate-300 text-xs text-slate-800 px-3 py-2 rounded-lg focus:outline-none focus:border-senac-orange w-48 md:w-60 shadow-sm">
                     <select id="filterUnitSelect" onchange="renderVotingCards()" class="bg-white border border-slate-300 text-xs text-slate-800 px-3 py-2 rounded-lg focus:outline-none focus:border-senac-orange shadow-sm">
                         <option value="all">Todas Unidades</option>
@@ -436,7 +432,6 @@
                 </div>
             </div>
 
-            <!-- Grid de Cards de Votação -->
             <div id="votingGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Injetado por Javascript -->
             </div>
@@ -444,27 +439,24 @@
 
         <!-- TAB 3: PLACAR AO VIVO E RANKING -->
         <section id="view-ranking" class="tab-view hidden space-y-8">
-            <!-- Pódio dos 3 Primeiros -->
             <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm">
                 <div class="text-center mb-8">
                     <span class="px-3 py-1 bg-amber-100 text-amber-700 border border-amber-200 rounded-full text-xs font-bold uppercase tracking-widest">
-                        🏆 Pódio de Liderança
+                        🏆 Pódio de Liderança Ao Vivo
                     </span>
                     <h2 class="text-2xl md:text-3xl font-extrabold font-display text-senac-blue mt-2">Nomes Mais Votados do Robô</h2>
-                    <p class="text-xs text-slate-500">Atualizado em tempo real com os votos da equipe pedagógica</p>
+                    <p class="text-xs text-slate-500">Sincronizado automaticamente entre todas as unidades Senac Ceará</p>
                 </div>
 
-                <!-- Pódio UI -->
                 <div id="podiumContainer" class="flex flex-col md:flex-row items-end justify-center gap-4 pt-6 max-w-3xl mx-auto">
                     <!-- Injetado via Javascript -->
                 </div>
             </div>
 
-            <!-- Tabela Completa do Ranking -->
             <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-sm">
                 <h3 class="text-lg font-bold font-display text-senac-blue mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-list-ol text-senac-orange"></i>
-                    Classificação Geral de Sugestões
+                    Classificação Geral de Votação
                 </h3>
 
                 <div class="overflow-x-auto">
@@ -473,7 +465,7 @@
                             <tr>
                                 <th class="p-3">Posição</th>
                                 <th class="p-3">Nome Sugerido</th>
-                                <th class="p-3">Supervisor(a) / Colaborador(a) / Unidade</th>
+                                <th class="p-3">Conceito Pedagógico</th>
                                 <th class="p-3">Curtidas</th>
                                 <th class="p-3">Votos Diretos</th>
                                 <th class="p-3 text-right">% Popularidade</th>
@@ -497,12 +489,10 @@
                     <p class="text-xs text-slate-500 mt-1">Clique no mascote para ouvi-lo falar sobre a pedagogia Senac!</p>
                 </div>
 
-                <!-- Balão de Fala do Robô -->
                 <div id="robotSpeechBubble" class="relative z-10 my-4 bg-white border border-sky-300 px-6 py-3 rounded-2xl text-senac-blue font-semibold text-sm max-w-md shadow-md transition duration-300">
-                    "Olá, Supervisores do Senac Ceará! Qual nome vocês vão escolher para mim?"
+                    "Olá, Colaboradores do Senac Ceará! Qual nome vocês escolheram para mim?"
                 </div>
 
-                <!-- Avatar Holográfico -->
                 <div onclick="triggerRobotSpeech()" class="relative z-10 my-6 cursor-pointer group transform hover:scale-105 transition duration-300">
                     <div class="w-64 h-64 mx-auto relative flex items-center justify-center">
                         <div class="absolute inset-0 rounded-full bg-sky-200/50 blur-2xl animate-pulse-glow"></div>
@@ -519,7 +509,7 @@
 
     </main>
 
-    <!-- Modal de Identificação do Supervisor ou Colaborador -->
+    <!-- Modal de Identificação do Colaborador -->
     <div id="supervisorModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-2xl p-6 border border-slate-200 shadow-2xl relative">
             <button onclick="closeSupervisorModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -530,15 +520,15 @@
                     <i class="fa-solid fa-id-card text-lg"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold font-display text-senac-blue">Identificação da Supervisão</h3>
+                    <h3 class="text-lg font-bold font-display text-senac-blue">Identificação do Colaborador</h3>
                     <p class="text-xs text-slate-500">Insira seus dados para votar e interagir no painel</p>
                 </div>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Identificação da Supervisão</label>
-                    <input type="text" id="modalSupervisorName" placeholder="Ex: Supervisão Pedagógica" 
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Identificação do Colaborador</label>
+                    <input type="text" id="modalSupervisorName" placeholder="Ex: Nome do Colaborador" 
                         class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-senac-orange">
                 </div>
                 <div>
@@ -581,13 +571,22 @@
                 <span>•</span>
                 <span>NTE (Núcleo de Tecnologia Educacional)</span>
             </div>
-            <p>Criado para os Supervisores Pedagógicos • Eleição do Mascote Institucional 2026</p>
+            <p>Criado para os Colaboradores • Eleição do Mascote Institucional 2026</p>
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'nte-robo-eleicao';
+
         let currentSupervisor = {
-            name: "Supervisão",
+            name: "Colaborador",
             unit: "Fortaleza (Centro)",
             hasVoted: false,
             votedId: null
@@ -595,96 +594,105 @@
 
         let activeRobotColor = '#006ccb';
 
-        // Sugestões pré-cadastradas para facilitar a escolha dos supervisores
         let suggestions = [
-            {
-                id: 1,
-                name: "NTEK",
-                supervisor: "Equipe NTE",
-                unit: "NTE Central",
-                justification: "União entre NTE e tecnologia.",
-                trait: "Futurista",
-                likes: 0,
-                votes: 0,
-                color: "#006ccb"
-            },
-            {
-                id: 2,
-                name: "NTEBOT",
-                supervisor: "Equipe NTE",
-                unit: "NTE Central",
-                justification: "Simples, direto e tecnológico.",
-                trait: "Inovador",
-                likes: 0,
-                votes: 0,
-                color: "#F37021"
-            },
-            {
-                id: 3,
-                name: "NTINO",
-                supervisor: "Equipe NTE",
-                unit: "NTE Central",
-                justification: "Inspirado em NTE + um nome amigável.",
-                trait: "Acolhedor",
-                likes: 0,
-                votes: 0,
-                color: "#10b981"
-            },
-            {
-                id: 4,
-                name: "MENTOR",
-                supervisor: "Equipe NTE",
-                unit: "NTE Central",
-                justification: "Representa apoio e orientação na jornada educacional.",
-                trait: "Didático",
-                likes: 0,
-                votes: 0,
-                color: "#a855f7"
-            },
-            {
-                id: 5,
-                name: "TEC",
-                supervisor: "Equipe NTE",
-                unit: "NTE Central",
-                justification: "Curto e moderno.",
-                trait: "Inovador",
-                likes: 0,
-                votes: 0,
-                color: "#e11d48"
-            },
-            {
-                id: 6,
-                name: "TÉO",
-                supervisor: "Equipe NTE",
-                unit: "NTE Central",
-                justification: "Tecnologia, Educação e Orientação.",
-                trait: "Orientador",
-                likes: 0,
-                votes: 0,
-                color: "#f59e0b"
-            }
+            { id: 1, name: "NTEK", supervisor: "Equipe NTE", unit: "NTE Central", justification: "União entre NTE e tecnologia.", trait: "Futurista", likes: 0, votes: 0, color: "#006ccb" },
+            { id: 2, name: "NTEBOT", supervisor: "Equipe NTE", unit: "NTE Central", justification: "Simples, direto e tecnológico.", trait: "Inovador", likes: 0, votes: 0, color: "#F37021" },
+            { id: 3, name: "NTINO", supervisor: "Equipe NTE", unit: "NTE Central", justification: "Inspirado em NTE + um nome amigável.", trait: "Acolhedor", likes: 0, votes: 0, color: "#10b981" },
+            { id: 4, name: "MENTOR", supervisor: "Equipe NTE", unit: "NTE Central", justification: "Representa apoio e orientação na jornada educacional.", trait: "Didático", likes: 0, votes: 0, color: "#a855f7" },
+            { id: 5, name: "TEC", supervisor: "Equipe NTE", unit: "NTE Central", justification: "Curto e moderno.", trait: "Inovador", likes: 0, votes: 0, color: "#e11d48" },
+            { id: 6, name: "TÉO", supervisor: "Equipe NTE", unit: "NTE Central", justification: "Tecnologia, Educação e Orientação.", trait: "Orientador", likes: 0, votes: 0, color: "#f59e0b" }
         ];
 
-        // Frases para o Holograma Interativo
         const robotQuotes = [
             "Transformando a educação profissional do Senac Ceará com inovação!",
             "Didática + Tecnologia = Aprendizado Inesquecível!",
-            "Saudações, Supervisores Pedagógicos! Qual nome vocês vão escolher para mim?",
-            "NTE em ação: conectando o Cariri, Sertão Central e Litoral!",
+            "Saudações! Qual nome vocês vão escolher para mim?",
+            "NTE em ação: conectando o Cariri, Sertão Central, Fortaleza e Litoral!",
             "Estou pronto para ser o mascote oficial das nossas metodologias ativas!"
         ];
 
-        window.addEventListener('DOMContentLoaded', () => {
-            updateGlobalCounters();
-            renderVotingCards();
-            renderRanking();
-            updateRobotPreview(true);
-            renderHoloSvg();
-            initConfetti();
-        });
+        async function initFirebase() {
+            if (typeof __firebase_config === 'undefined') {
+                console.log("Executando em modo local sem Firebase.");
+                return;
+            }
+            try {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                currentUser = auth.currentUser;
+                if (!currentUser) return;
+
+                const badge = document.getElementById('syncStatusBadge');
+                if (badge) {
+                    badge.classList.remove('hidden');
+                    badge.classList.add('inline-flex');
+                }
+
+                setupRealtimeListeners();
+            } catch (e) {
+                console.warn("Conexão ao banco de dados não inicializada:", e);
+            }
+        }
+
+        function setupRealtimeListeners() {
+            if (!db || !currentUser) return;
+
+            // Strict paths: /artifacts/{appId}/public/data/{collectionName}
+            const votesRef = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
+            const likesRef = collection(db, 'artifacts', appId, 'public', 'data', 'likes');
+
+            onSnapshot(votesRef, (snapshot) => {
+                suggestions.forEach(s => s.votes = 0);
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data && data.candidateId) {
+                        const candidate = suggestions.find(s => s.id === Number(data.candidateId));
+                        if (candidate) {
+                            candidate.votes += 1;
+                        }
+                    }
+
+                    if (docSnap.id === currentUser.uid) {
+                        currentSupervisor.hasVoted = true;
+                        currentSupervisor.votedId = Number(data.candidateId);
+                        if (data.supervisorName) currentSupervisor.name = data.supervisorName;
+                        if (data.unit) currentSupervisor.unit = data.unit;
+                        updateSupervisorUI();
+                    }
+                });
+
+                updateGlobalCounters();
+                renderVotingCards();
+                renderRanking();
+            }, (error) => console.error("Erro ao escutar votos:", error));
+
+            onSnapshot(likesRef, (snapshot) => {
+                suggestions.forEach(s => s.likes = 0);
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data && data.candidateId) {
+                        const candidate = suggestions.find(s => s.id === Number(data.candidateId));
+                        if (candidate) {
+                            candidate.likes += 1;
+                        }
+                    }
+                });
+                renderVotingCards();
+                renderRanking();
+            }, (error) => console.error("Erro ao escutar curtidas:", error));
+        }
 
         function switchTab(tabId) {
-            // Update Tab Buttons UI
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('bg-senac-orange', 'text-white', 'shadow-md', 'shadow-senac-orange/20');
                 btn.classList.add('text-slate-600', 'hover:text-senac-blue', 'hover:bg-slate-200/60');
@@ -696,7 +704,6 @@
                 activeBtn.classList.add('bg-senac-orange', 'text-white', 'shadow-md', 'shadow-senac-orange/20');
             }
 
-            // Hide/Show Views
             document.querySelectorAll('.tab-view').forEach(view => {
                 view.classList.add('hidden');
                 view.classList.remove('block');
@@ -725,10 +732,10 @@
                     <!-- Cabeça Principal -->
                     <rect x="42" y="38" width="116" height="80" rx="20" fill="#004582" stroke="${color}" stroke-width="3.5" />
                     
-                    <!-- Viseira / Óculos Digital -->
+                    <!-- Viseira Digital -->
                     <rect x="52" y="52" width="96" height="42" rx="12" fill="#00284d" stroke="#00b4d8" stroke-width="1.5" />
 
-                    <!-- Olhos LED -->
+                    <!-- Olhos LED com cor dinâmica -->
                     <circle cx="75" cy="73" r="10" fill="${color}">
                         <animate attributeName="opacity" values="1;0.4;1" dur="3s" repeatCount="indefinite" />
                     </circle>
@@ -738,7 +745,7 @@
                     <circle cx="78" cy="70" r="3" fill="#ffffff" />
                     <circle cx="128" cy="70" r="3" fill="#ffffff" />
 
-                    <!-- Bochechas / Sorriso -->
+                    <!-- Sorriso -->
                     <path d="M 82 86 Q 100 96 118 86" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" />
 
                     <!-- Corpo Principal -->
@@ -759,7 +766,7 @@
             activeRobotColor = hex;
             updateRobotPreview(false);
             renderHoloSvg();
-            showToast("Cor dos LEDs do robô alterada!", "fa-lightbulb", hex);
+            showToast("Cor do LED do robô alterada!", "fa-lightbulb", hex);
         }
 
         function updateRobotPreview(isRadioChange = false) {
@@ -782,7 +789,7 @@
             }
         }
 
-        function handleSuggestSubmit(e) {
+        async function handleSuggestSubmit(e) {
             e.preventDefault();
 
             const supervisorInput = document.getElementById('supervisorNameInput');
@@ -793,56 +800,94 @@
             const selectedId = parseInt(document.querySelector('input[name="selectedRobotCandidate"]:checked')?.value || '1');
 
             if(!supervisor || !unit) {
-                showToast("Por favor, preencha a identificação da supervisão e sua unidade!", "fa-triangle-exclamation", "#f59e0b");
+                showToast("Por favor, preencha a identificação do colaborador e sua unidade!", "fa-triangle-exclamation", "#f59e0b");
                 return;
             }
 
-            // Save Supervisor Profile
             currentSupervisor.name = supervisor;
             currentSupervisor.unit = unit;
             updateSupervisorUI();
 
-            // Computar Voto Direto na opção escolhida
-            voteSuggestion(selectedId);
+            await voteSuggestion(selectedId);
         }
 
         function renderHoloSvg() {
             const holoContainer = document.getElementById('holoSvgContainer');
             if(holoContainer) {
-                holoContainer.innerHTML = generateRobotSVG('#006ccb', 'Holograma', true);
+                holoContainer.innerHTML = generateRobotSVG(activeRobotColor, 'Holograma', true);
             }
         }
 
-        function likeSuggestion(id) {
+        async function likeSuggestion(id) {
             const item = suggestions.find(s => s.id === id);
-            if(item) {
+            if(!item) return;
+
+            if(!db || !currentUser) {
                 item.likes += 1;
                 renderVotingCards();
                 renderRanking();
                 showToast(`Você curtiu a proposta "${item.name}"!`, "fa-heart", "#e11d48");
+                return;
+            }
+
+            try {
+                const likeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'likes', `${currentUser.uid}_${id}`);
+                const snap = await getDoc(likeDocRef);
+                if (snap.exists()) {
+                    showToast(`Você já curtiu a proposta "${item.name}"!`, "fa-heart", "#e11d48");
+                    return;
+                }
+                await setDoc(likeDocRef, {
+                    candidateId: id,
+                    userId: currentUser.uid,
+                    createdAt: serverTimestamp()
+                });
+                showToast(`Sua curtida em "${item.name}" foi contabilizada!`, "fa-heart", "#e11d48");
+            } catch (err) {
+                console.error("Erro ao curtir:", err);
             }
         }
 
-        function voteSuggestion(id) {
+        async function voteSuggestion(id) {
             const item = suggestions.find(s => s.id === id);
             if(!item) return;
 
-            if(currentSupervisor.hasVoted) {
-                // Diminuir voto do anterior se mudar de ideia
-                const prev = suggestions.find(s => s.id === currentSupervisor.votedId);
-                if(prev && prev.votes > 0) prev.votes -= 1;
+            if(!db || !currentUser) {
+                if(currentSupervisor.hasVoted) {
+                    const prev = suggestions.find(s => s.id === currentSupervisor.votedId);
+                    if(prev && prev.votes > 0) prev.votes -= 1;
+                }
+
+                item.votes += 1;
+                currentSupervisor.hasVoted = true;
+                currentSupervisor.votedId = id;
+
+                updateGlobalCounters();
+                renderVotingCards();
+                renderRanking();
+                triggerConfetti();
+                showToast(`Voto confirmado em "${item.name}"!`, "fa-check-double", "#10b981");
+                return;
             }
 
-            item.votes += 1;
-            currentSupervisor.hasVoted = true;
-            currentSupervisor.votedId = id;
+            try {
+                const userVoteRef = doc(db, 'artifacts', appId, 'public', 'data', 'votes', currentUser.uid);
+                await setDoc(userVoteRef, {
+                    candidateId: id,
+                    supervisorName: currentSupervisor.name,
+                    unit: currentSupervisor.unit,
+                    userId: currentUser.uid,
+                    updatedAt: serverTimestamp()
+                });
 
-            updateGlobalCounters();
-            renderVotingCards();
-            renderRanking();
-            triggerConfetti();
-
-            showToast(`Voto confirmado em "${item.name}"!`, "fa-check-double", "#10b981");
+                currentSupervisor.hasVoted = true;
+                currentSupervisor.votedId = id;
+                triggerConfetti();
+                showToast(`Voto registrado em "${item.name}" na nuvem!`, "fa-cloud-arrow-up", "#10b981");
+            } catch (err) {
+                console.error("Erro ao registrar voto na nuvem:", err);
+                showToast("Erro ao registrar voto na nuvem.", "fa-triangle-exclamation", "#ef4444");
+            }
         }
 
         function renderVotingCards() {
@@ -862,8 +907,7 @@
                 grid.innerHTML = `
                     <div class="col-span-full py-16 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                         <i class="fa-solid fa-robot text-4xl mb-3 block text-slate-300"></i>
-                        <p class="text-sm font-medium text-slate-600">Nenhuma sugestão cadastrada ainda.</p>
-                        <p class="text-xs text-slate-400 mt-1">Seja o primeiro a enviar uma proposta na aba "Sugira um Nome"!</p>
+                        <p class="text-sm font-medium text-slate-600">Nenhuma opção encontrada.</p>
                     </div>
                 `;
                 return;
@@ -899,8 +943,8 @@
                         </p>
 
                         <div class="text-[11px] text-slate-500 mb-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                            <span><i class="fa-solid fa-user-pen text-slate-400 mr-1"></i>${item.supervisor}</span>
-                            <span class="text-senac-orange font-semibold">${item.unit}</span>
+                            <span><i class="fa-solid fa-robot text-slate-400 mr-1"></i>Opção Oficial</span>
+                            <span class="text-senac-orange font-semibold">NTE Senac</span>
                         </div>
 
                         <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
@@ -923,32 +967,9 @@
             const podium = document.getElementById('podiumContainer');
             const tableBody = document.getElementById('rankingTableBody');
 
-            if(suggestions.length === 0) {
-                if(podium) {
-                    podium.innerHTML = `
-                        <div class="py-8 text-center text-slate-400 text-sm">
-                            <i class="fa-solid fa-trophy text-3xl mb-2 text-slate-300 block"></i>
-                            O pódio será formado assim que os supervisores começarem a cadastrar e votar nos nomes!
-                        </div>
-                    `;
-                }
-                if(tableBody) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="p-8 text-center text-slate-400 text-xs">
-                                Nenhum voto computado ainda.
-                            </td>
-                        </tr>
-                    `;
-                }
-                return;
-            }
-
-            // Sort suggestions by direct votes descending
             const sorted = [...suggestions].sort((a, b) => b.votes - a.votes);
             const totalVotes = sorted.reduce((acc, curr) => acc + curr.votes, 0) || 1;
 
-            // Render Podium (Top 3)
             if(podium) {
                 const top1 = sorted[0];
                 const top2 = sorted[1];
@@ -999,7 +1020,6 @@
                 `;
             }
 
-            // Render Table
             if(tableBody) {
                 tableBody.innerHTML = sorted.map((item, idx) => {
                     const percentage = totalVotes > 0 ? ((item.votes / totalVotes) * 100).toFixed(1) : "0.0";
@@ -1011,8 +1031,7 @@
                             </td>
                             <td class="p-3 font-bold text-senac-blue font-display">${item.name}</td>
                             <td class="p-3 text-slate-700">
-                                <span class="block font-medium">${item.supervisor}</span>
-                                <span class="text-[10px] text-slate-400">${item.unit}</span>
+                                <span class="block font-medium">${item.justification}</span>
                             </td>
                             <td class="p-3 text-rose-500 font-semibold"><i class="fa-solid fa-heart mr-1"></i>${item.likes}</td>
                             <td class="p-3 text-senac-blue font-bold">${item.votes}</td>
@@ -1064,8 +1083,7 @@
                 currentSupervisor.name = name;
                 currentSupervisor.unit = unit;
                 updateSupervisorUI();
-                
-                // Pre-fill in suggest form
+
                 const supervisorInput = document.getElementById('supervisorNameInput');
                 if (supervisorInput) supervisorInput.value = name;
 
@@ -1091,6 +1109,11 @@
             const totalVotes = suggestions.reduce((acc, curr) => acc + curr.votes, 0);
             const votesEl = document.getElementById('totalVotesCount');
             if (votesEl) votesEl.innerText = totalVotes;
+        }
+
+        function shareOnWhatsApp() {
+            const text = encodeURIComponent("🤖 *Eleição Oficial do Robô Mascote NTE - Senac Ceará*\n\nVenha votar no nome oficial do nosso robô mascote pedagógico!\n\nAcesse o sistema e deixe seu voto ao vivo!");
+            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
         }
 
         function showToast(message, iconClass = "fa-circle-check", iconColor = "#F37021") {
@@ -1158,7 +1181,7 @@
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.2; // Gravity
+                p.vy += 0.2;
                 p.life -= 1.5;
 
                 confettiCtx.fillStyle = p.color;
@@ -1172,6 +1195,30 @@
                 requestAnimationFrame(updateConfetti);
             }
         }
+
+        // Exposing functions to global scope
+        window.switchTab = switchTab;
+        window.setRobotColor = setRobotColor;
+        window.updateRobotPreview = updateRobotPreview;
+        window.handleSuggestSubmit = handleSuggestSubmit;
+        window.likeSuggestion = likeSuggestion;
+        window.voteSuggestion = voteSuggestion;
+        window.triggerRobotSpeech = triggerRobotSpeech;
+        window.openSupervisorModal = openSupervisorModal;
+        window.closeSupervisorModal = closeSupervisorModal;
+        window.saveSupervisorProfile = saveSupervisorProfile;
+        window.renderVotingCards = renderVotingCards;
+        window.shareOnWhatsApp = shareOnWhatsApp;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            updateGlobalCounters();
+            renderVotingCards();
+            renderRanking();
+            updateRobotPreview(true);
+            renderHoloSvg();
+            initConfetti();
+        });
     </script>
 </body>
 </html>
