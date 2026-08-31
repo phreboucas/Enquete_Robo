@@ -210,7 +210,7 @@
 
                 <div class="flex items-center gap-4 bg-white/10 backdrop-blur border border-white/20 p-4 rounded-xl shrink-0">
                     <div class="text-center px-3 border-r border-white/20">
-                        <span id="totalSuggestionsCount" class="block text-2xl font-bold font-display text-amber-300">5</span>
+                        <span id="totalSuggestionsCount" class="block text-2xl font-bold font-display text-amber-300">6</span>
                         <span class="text-[10px] text-slate-100 uppercase tracking-wider">Opções Oficiais</span>
                     </div>
                     <div class="text-center px-3 border-r border-white/20">
@@ -346,6 +346,20 @@
                                             <div>
                                                 <h4 class="font-bold font-display text-senac-blue text-sm">TEC</h4>
                                                 <p class="text-xs text-slate-500">Curto e moderno.</p>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-circle-check text-slate-300 peer-checked:text-senac-orange text-lg"></i>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer block">
+                                    <input type="radio" name="selectedRobotCandidate" value="6" onchange="updateRobotPreview()" class="peer sr-only">
+                                    <div class="p-3.5 rounded-xl bg-white border border-slate-300 peer-checked:border-senac-orange peer-checked:bg-orange-50/60 peer-checked:ring-1 peer-checked:ring-senac-orange transition flex items-center justify-between shadow-sm">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs font-display">06</span>
+                                            <div>
+                                                <h4 class="font-bold font-display text-senac-blue text-sm">TÉO</h4>
+                                                <p class="text-xs text-slate-500">Tecnologia, Educação e Orientação.</p>
                                             </div>
                                         </div>
                                         <i class="fa-solid fa-circle-check text-slate-300 peer-checked:text-senac-orange text-lg"></i>
@@ -678,6 +692,17 @@
                 likes: 0,
                 votes: 0,
                 color: "#e11d48"
+            },
+            {
+                id: 6,
+                name: "TÉO",
+                supervisor: "Equipe NTE",
+                unit: "NTE Central",
+                justification: "Tecnologia, Educação e Orientação.",
+                trait: "Orientador",
+                likes: 0,
+                votes: 0,
+                color: "#f59e0b"
             }
         ];
 
@@ -781,8 +806,11 @@
             const selectedId = parseInt(document.querySelector('input[name="selectedRobotCandidate"]:checked')?.value || '1');
             const candidate = suggestions.find(s => s.id === selectedId) || suggestions[0];
             
-            document.getElementById('previewRobotTitle').innerText = candidate.name;
-            document.getElementById('previewRobotTrait').innerText = candidate.justification;
+            const titleEl = document.getElementById('previewRobotTitle');
+            if (titleEl) titleEl.innerText = candidate.name;
+
+            const traitEl = document.getElementById('previewRobotTrait');
+            if (traitEl) traitEl.innerText = candidate.justification;
             
             const container = document.getElementById('svgRobotContainer');
             if(container) {
@@ -793,8 +821,11 @@
         function handleSuggestSubmit(e) {
             e.preventDefault();
 
-            const supervisor = document.getElementById('supervisorNameInput').value.trim();
-            const unit = document.getElementById('unitInput').value;
+            const supervisorInput = document.getElementById('supervisorNameInput');
+            const unitInput = document.getElementById('unitInput');
+
+            const supervisor = supervisorInput ? supervisorInput.value.trim() : '';
+            const unit = unitInput ? unitInput.value : '';
             const selectedId = parseInt(document.querySelector('input[name="selectedRobotCandidate"]:checked')?.value || '1');
 
             if(!supervisor || !unit) {
@@ -1036,10 +1067,12 @@
         }
 
         async function generateAINames() {
-            const keywords = document.getElementById('aiKeywordsInput').value.trim() || 'Inovação, Educação Profissional, Ceará, Futuro';
+            const keywords = document.getElementById('aiKeywordsInput')?.value?.trim() || 'Inovação, Educação Profissional, Ceará, Futuro';
             const btn = document.getElementById('aiGenerateBtn');
             const container = document.getElementById('aiResultsContainer');
             const grid = document.getElementById('aiCardsGrid');
+
+            if (!btn || !container || !grid) return;
 
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Gerando Ideias no NTE...`;
@@ -1159,8 +1192,8 @@ Retorne um JSON contendo uma lista com exatamente 3 objetos. Cada objeto deve po
         }
 
         function saveSupervisorProfile() {
-            const name = document.getElementById('modalSupervisorName').value.trim();
-            const unit = document.getElementById('modalSupervisorUnit').value;
+            const name = document.getElementById('modalSupervisorName')?.value?.trim() || '';
+            const unit = document.getElementById('modalSupervisorUnit')?.value || '';
 
             if(name) {
                 currentSupervisor.name = name;
@@ -1168,8 +1201,11 @@ Retorne um JSON contendo uma lista com exatamente 3 objetos. Cada objeto deve po
                 updateSupervisorUI();
                 
                 // Pre-fill in suggest form
-                document.getElementById('supervisorNameInput').value = name;
-                document.getElementById('unitInput').value = unit;
+                const supervisorInput = document.getElementById('supervisorNameInput');
+                if (supervisorInput) supervisorInput.value = name;
+
+                const unitInput = document.getElementById('unitInput');
+                if (unitInput) unitInput.value = unit;
 
                 closeSupervisorModal();
                 showToast(`Bem-vindo(a), ${name}!`, "fa-user-check", "#10b981");
@@ -1184,15 +1220,20 @@ Retorne um JSON contendo uma lista com exatamente 3 objetos. Cada objeto deve po
         }
 
         function updateGlobalCounters() {
-            document.getElementById('totalSuggestionsCount').innerText = suggestions.length;
+            const suggEl = document.getElementById('totalSuggestionsCount');
+            if (suggEl) suggEl.innerText = suggestions.length;
+
             const totalVotes = suggestions.reduce((acc, curr) => acc + curr.votes, 0);
-            document.getElementById('totalVotesCount').innerText = totalVotes;
+            const votesEl = document.getElementById('totalVotesCount');
+            if (votesEl) votesEl.innerText = totalVotes;
         }
 
         function showToast(message, iconClass = "fa-circle-check", iconColor = "#F37021") {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMessage');
             const toastIcon = document.getElementById('toastIcon');
+
+            if (!toast || !toastMsg || !toastIcon) return;
 
             toastMsg.innerText = message;
             toastIcon.className = `fa-solid ${iconClass} text-lg`;
