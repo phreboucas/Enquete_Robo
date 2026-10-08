@@ -576,14 +576,24 @@
     </footer>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+        // Supabase (chave pública "anon": só permite votar e ler o placar)
+        const SUPABASE_URL = "https://oqbsfehqljhhoexndali.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_L7cdDBOEmyaQwbv1fMgJeA_YJL0hA38";
 
         let db = null;
-        let auth = null;
         let currentUser = null;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'nte-robo-eleicao';
+
+        function getVoterId() {
+            let id = null;
+            try { id = localStorage.getItem('nte_voter_id'); } catch (e) {}
+            if (!id) {
+                id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+                try { localStorage.setItem('nte_voter_id', id); } catch (e) {}
+            }
+            return id;
+        }
 
         let currentSupervisor = {
             name: "Colaborador",
@@ -612,24 +622,9 @@
         ];
 
         async function initFirebase() {
-            if (typeof __firebase_config === 'undefined') {
-                console.log("Executando em modo local sem Firebase.");
-                return;
-            }
             try {
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                currentUser = auth.currentUser;
-                if (!currentUser) return;
+                db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+                currentUser = { uid: getVoterId() };
 
                 const badge = document.getElementById('syncStatusBadge');
                 if (badge) {
@@ -637,59 +632,32 @@
                     badge.classList.add('inline-flex');
                 }
 
-                setupRealtimeListeners();
+                await refreshFromCloud();
+                setInterval(refreshFromCloud, 5000);
             } catch (e) {
                 console.warn("Conexão ao banco de dados não inicializada:", e);
+                db = null;
             }
         }
 
-        function setupRealtimeListeners() {
+        async function refreshFromCloud() {
             if (!db || !currentUser) return;
+            const { data, error } = await db.rpc('placar', { p_voter_id: currentUser.uid });
+            if (error) { console.error("Erro ao ler placar:", error); return; }
 
-            // Strict paths: /artifacts/{appId}/public/data/{collectionName}
-            const votesRef = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
-            const likesRef = collection(db, 'artifacts', appId, 'public', 'data', 'likes');
+            suggestions.forEach(s => { s.votes = 0; s.likes = 0; });
+            (data || []).forEach(row => {
+                const c = suggestions.find(s => s.id === Number(row.candidate_id));
+                if (c) { c.votes = Number(row.votos) || 0; c.likes = Number(row.curtidas) || 0; }
+                if (row.meu_voto) {
+                    currentSupervisor.hasVoted = true;
+                    currentSupervisor.votedId = Number(row.candidate_id);
+                }
+            });
 
-            onSnapshot(votesRef, (snapshot) => {
-                suggestions.forEach(s => s.votes = 0);
-
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if (data && data.candidateId) {
-                        const candidate = suggestions.find(s => s.id === Number(data.candidateId));
-                        if (candidate) {
-                            candidate.votes += 1;
-                        }
-                    }
-
-                    if (docSnap.id === currentUser.uid) {
-                        currentSupervisor.hasVoted = true;
-                        currentSupervisor.votedId = Number(data.candidateId);
-                        if (data.supervisorName) currentSupervisor.name = data.supervisorName;
-                        if (data.unit) currentSupervisor.unit = data.unit;
-                        updateSupervisorUI();
-                    }
-                });
-
-                updateGlobalCounters();
-                renderVotingCards();
-                renderRanking();
-            }, (error) => console.error("Erro ao escutar votos:", error));
-
-            onSnapshot(likesRef, (snapshot) => {
-                suggestions.forEach(s => s.likes = 0);
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if (data && data.candidateId) {
-                        const candidate = suggestions.find(s => s.id === Number(data.candidateId));
-                        if (candidate) {
-                            candidate.likes += 1;
-                        }
-                    }
-                });
-                renderVotingCards();
-                renderRanking();
-            }, (error) => console.error("Erro ao escutar curtidas:", error));
+            updateGlobalCounters();
+            renderVotingCards();
+            renderRanking();
         }
 
         function switchTab(tabId) {
@@ -831,18 +799,14 @@
             }
 
             try {
-                const likeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'likes', `${currentUser.uid}_${id}`);
-                const snap = await getDoc(likeDocRef);
-                if (snap.exists()) {
+                const { data, error } = await db.rpc('curtir', { p_voter_id: currentUser.uid, p_candidate_id: id });
+                if (error) throw error;
+                if (data === false) {
                     showToast(`Você já curtiu a proposta "${item.name}"!`, "fa-heart", "#e11d48");
                     return;
                 }
-                await setDoc(likeDocRef, {
-                    candidateId: id,
-                    userId: currentUser.uid,
-                    createdAt: serverTimestamp()
-                });
                 showToast(`Sua curtida em "${item.name}" foi contabilizada!`, "fa-heart", "#e11d48");
+                await refreshFromCloud();
             } catch (err) {
                 console.error("Erro ao curtir:", err);
             }
@@ -871,19 +835,19 @@
             }
 
             try {
-                const userVoteRef = doc(db, 'artifacts', appId, 'public', 'data', 'votes', currentUser.uid);
-                await setDoc(userVoteRef, {
-                    candidateId: id,
-                    supervisorName: currentSupervisor.name,
-                    unit: currentSupervisor.unit,
-                    userId: currentUser.uid,
-                    updatedAt: serverTimestamp()
+                const { error } = await db.rpc('registrar_voto', {
+                    p_voter_id: currentUser.uid,
+                    p_candidate_id: id,
+                    p_nome: currentSupervisor.name,
+                    p_unidade: currentSupervisor.unit
                 });
+                if (error) throw error;
 
                 currentSupervisor.hasVoted = true;
                 currentSupervisor.votedId = id;
                 triggerConfetti();
                 showToast(`Voto registrado em "${item.name}" na nuvem!`, "fa-cloud-arrow-up", "#10b981");
+                await refreshFromCloud();
             } catch (err) {
                 console.error("Erro ao registrar voto na nuvem:", err);
                 showToast("Erro ao registrar voto na nuvem.", "fa-triangle-exclamation", "#ef4444");
