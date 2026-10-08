@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Resultados · Eleição do Robô Mascote NTE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #004582; --blue-2: #006ccb; --orange: #F37021;
+    --bg: #f4f6fa; --card: #ffffff; --ink: #1e293b; --muted: #64748b; --line: #e2e8f0;
+    --soft: #f8fafc; --danger: #e11d48; --ok: #10b981;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+  .display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.01em; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  .hidden { display: none !important; }
+
+  /* Topo */
+  header.top { background: linear-gradient(120deg, var(--blue) 0%, #00366a 60%, #002a52 100%); color: #fff; }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 22px; padding-bottom: 22px; flex-wrap: wrap; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #ffb27d; }
+  .top h1 { margin: 4px 0 2px; font-size: 26px; font-weight: 700; }
+  .top .sub { font-size: 13px; color: #c7d6ea; display: flex; align-items: center; gap: 8px; }
+  .live { width: 8px; height: 8px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 0 rgba(52,211,153,.6); animation: pulse 2s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(52,211,153,0); } 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); } }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { border: 0; border-radius: 10px; padding: 10px 14px; font: 600 13px 'Inter', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: transform .1s, background .2s; }
+  .btn:active { transform: scale(.98); }
+  .btn-orange { background: var(--orange); color: #fff; }
+  .btn-orange:hover { background: #dd5f12; }
+  .btn-ghost { background: rgba(255,255,255,.12); color: #fff; }
+  .btn-ghost:hover { background: rgba(255,255,255,.2); }
+
+  /* Cards */
+  main { padding: 24px 0 48px; }
+  .grid-kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: -2px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+  .kpi .label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+  .kpi .value { font-size: 30px; font-weight: 700; margin-top: 6px; color: var(--blue); }
+  .kpi .hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .kpi.lead .value { color: var(--orange); }
+  h2 { font-size: 17px; margin: 0 0 4px; }
+  .card .desc { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1.25fr; gap: 14px; margin-top: 14px; }
+
+  /* Ranking */
+  .rank-item { display: grid; grid-template-columns: 26px 92px 1fr 74px; align-items: center; gap: 10px; padding: 8px 0; }
+  .rank-pos { font: 700 13px 'Space Grotesk', sans-serif; color: var(--muted); text-align: center; }
+  .rank-item.first .rank-pos { color: var(--orange); }
+  .rank-name { font-weight: 700; font-size: 14px; }
+  .bar { height: 14px; background: var(--soft); border-radius: 99px; overflow: hidden; border: 1px solid var(--line); }
+  .bar > span { display: block; height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(.2,.8,.2,1); }
+  .rank-num { text-align: right; font-size: 13px; }
+  .rank-num b { font-size: 15px; }
+  .rank-num small { color: var(--muted); display: block; font-size: 11px; }
+
+  /* Tabelas */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 9px 10px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
+  tr:hover td { background: #fafcff; }
+  td.num, th.num { text-align: center; }
+  td.zero { color: #cbd5e1; }
+  td.total { font-weight: 700; color: var(--blue); }
+  td.total.zero { color: #cbd5e1; font-weight: 500; }
+  .row-2 > *, .grid-kpi > * { min-width: 0; }
+  .kpi .hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  tr.empty td:first-child { color: var(--muted); }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; padding: 3px 9px; border-radius: 99px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .tag { font-size: 10px; font-weight: 700; color: #92400e; background: #fef3c7; padding: 2px 6px; border-radius: 6px; margin-left: 6px; }
+
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .filters input, .filters select { font: 500 13px 'Inter', sans-serif; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); min-width: 0; }
+  .filters input { flex: 1 1 220px; }
+  .filters select { flex: 0 1 200px; }
+  .count-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .empty-state { text-align: center; padding: 30px 10px; color: var(--muted); font-size: 14px; }
+
+  /* Tela de acesso */
+  .gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px;
+          background: radial-gradient(circle at 20% 10%, #0b5aa3 0%, var(--blue) 40%, #002a52 100%); }
+  .gate-card { background: #fff; border-radius: 20px; padding: 28px; width: 100%; max-width: 380px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.45); }
+  .gate-card .eyebrow { color: var(--orange); }
+  .gate-card h1 { margin: 6px 0 6px; font-size: 22px; color: var(--blue); }
+  .gate-card p { font-size: 13px; color: var(--muted); margin: 0 0 18px; line-height: 1.5; }
+  .gate-card label { font-size: 12px; font-weight: 700; color: var(--ink); display: block; margin-bottom: 6px; }
+  .gate-card input { width: 100%; font: 500 15px 'Inter', sans-serif; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; outline: none; }
+  .gate-card input:focus { border-color: var(--blue-2); box-shadow: 0 0 0 3px rgba(0,108,203,.15); }
+  .gate-card .btn { width: 100%; justify-content: center; margin-top: 14px; padding: 12px; font-size: 14px; }
+  .gate-err { color: var(--danger); font-size: 13px; margin-top: 10px; min-height: 18px; }
+  .robot { width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, var(--orange), #ff9a52); display: grid; place-items: center; color: #fff; font: 700 20px 'Space Grotesk'; margin-bottom: 14px; }
+
+  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 0 16px 32px; }
+
+  @media (max-width: 900px) {
+    .grid-kpi { grid-template-columns: repeat(2, 1fr); }
+    .row-2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .top h1 { font-size: 21px; }
+    .kpi .value { font-size: 24px; }
+    .rank-item { grid-template-columns: 20px 74px 1fr 58px; gap: 8px; }
+    .actions { width: 100%; }
+    .filters select { flex: 1 1 100%; }
+    .actions .btn { flex: 1; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ACESSO -->
+<section id="gate" class="gate">
+  <form class="gate-card" id="gateForm" autocomplete="off">
+    <div class="robot">N</div>
+    <div class="eyebrow">Área restrita · NTE</div>
+    <h1 class="display">Resultados da eleição</h1>
+    <p>Digite a chave de acesso da coordenação para ver os votos, o placar por unidade e exportar a lista.</p>
+    <label for="chave">Chave de acesso</label>
+    <input id="chave" type="password" placeholder="••••••••" required>
+    <button class="btn btn-orange" type="submit" id="gateBtn">Ver resultados</button>
+    <div class="gate-err" id="gateErr"></div>
+  </form>
+</section>
+
+<!-- PAINEL -->
+<div id="panel" class="hidden">
+  <header class="top">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">NTE Senac Ceará · Eleição 2026</div>
+        <h1 class="display">Robô Mascote: resultados</h1>
+        <div class="sub"><span class="live"></span><span id="updatedAt">Carregando…</span></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" id="btnRefresh" type="button">↻ Atualizar</button>
+        <button class="btn btn-orange" id="btnCsv" type="button">⬇ Exportar CSV</button>
+        <button class="btn btn-ghost" id="btnLogout" type="button">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid-kpi">
+      <div class="card kpi"><div class="label">Total de votos</div><div class="value" id="kTotal">0</div><div class="hint" id="kTotalHint">colaboradores</div></div>
+      <div class="card kpi lead"><div class="label">Liderando</div><div class="value display" id="kLeader">—</div><div class="hint" id="kLeaderHint">aguardando votos</div></div>
+      <div class="card kpi"><div class="label">Unidades participando</div><div class="value" id="kUnits">0/14</div><div class="hint" id="kUnitsHint">com pelo menos 1 voto</div></div>
+      <div class="card kpi"><div class="label">Último voto</div><div class="value" id="kLast" style="font-size:22px">—</div><div class="hint" id="kLastHint">&nbsp;</div></div>
+    </section>
+
+    <section class="row-2">
+      <div class="card">
+        <h2 class="display">Placar geral</h2>
+        <p class="desc">Votos por nome, do mais votado ao menos votado.</p>
+        <div id="ranking"></div>
+      </div>
+      <div class="card">
+        <h2 class="display">Votos por unidade</h2>
+        <p class="desc">Como cada unidade votou. Unidades sem votos aparecem em cinza.</p>
+        <div class="table-scroll"><table id="unitTable"></table></div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2 class="display">Todos os votos</h2>
+      <p class="desc">Lista completa, mais recentes primeiro. Horário de Fortaleza.</p>
+      <div class="filters">
+        <input id="fSearch" type="search" placeholder="Buscar colaborador…">
+        <select id="fUnit"><option value="">Todas as unidades</option></select>
+        <select id="fName"><option value="">Todos os nomes</option></select>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Data e hora</th><th>Colaborador</th><th>Unidade</th><th>Escolha</th></tr></thead>
+          <tbody id="voteRows"></tbody>
+        </table>
+      </div>
+      <div class="count-note" id="countNote"></div>
+    </section>
+  </main>
+  <footer>Senac Ceará · NTE (Núcleo de Tecnologia Educacional) · Atualiza sozinho a cada 15 segundos</footer>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://oqbsfehqljhhoexndali.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_L7cdDBOEmyaQwbv1fMgJeA_YJL0hA38";
+
+  const CANDIDATES = [
+    { id: 1, name: "NTEK",   color: "#006ccb" },
+    { id: 2, name: "NTEBOT", color: "#F37021" },
+    { id: 3, name: "NTINO",  color: "#10b981" },
+    { id: 4, name: "MENTOR", color: "#a855f7" },
+    { id: 5, name: "TEC",    color: "#e11d48" },
+    { id: 6, name: "TÉO",    color: "#f59e0b" }
+  ];
+  const UNITS = ["Aquiraz","Cedro","Crato","Fortaleza (Aldeota)","Fortaleza (Centro)","GEP/6º andar","Iguatu","Itapipoca","Juazeiro do Norte","Maranguape","Quixadá","Senac Panorama","Sobral","NTE Central"];
+
+  let chave = null, votes = [], timer = null;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const cand = id => CANDIDATES.find(c => c.id === Number(id)) || { name: '?', color: '#94a3b8' };
+  const fmt = iso => new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Fortaleza', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+  function ago(iso) {
+    const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 60) return 'agora mesmo';
+    if (s < 3600) return `há ${Math.floor(s/60)} min`;
+    if (s < 86400) return `há ${Math.floor(s/3600)} h`;
+    return `há ${Math.floor(s/86400)} dia(s)`;
+  }
+
+  async function fetchVotes(key) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/resultados_admin`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_chave: key })
+    });
+    if (r.status === 403 || r.status === 401) throw new Error('chave');
+    if (!r.ok) throw new Error('rede');
+    return r.json();
+  }
+
+  function storeKey(k) { try { k ? sessionStorage.setItem('nte_admin_key', k) : sessionStorage.removeItem('nte_admin_key'); } catch (e) {} }
+  function loadKey() { try { return sessionStorage.getItem('nte_admin_key'); } catch (e) { return null; } }
+
+  async function enter(key, silent) {
+    $('gateBtn').disabled = true; $('gateBtn').textContent = 'Verificando…'; $('gateErr').textContent = '';
+    try {
+      votes = await fetchVotes(key);
+      chave = key; storeKey(key);
+      $('gate').classList.add('hidden'); $('panel').classList.remove('hidden');
+      render();
+      clearInterval(timer); timer = setInterval(refresh, 15000);
+    } catch (e) {
+      storeKey(null);
+      if (!silent) $('gateErr').textContent = e.message === 'chave' ? 'Chave incorreta. Confira e tente de novo.' : 'Não consegui conectar. Verifique a internet e tente de novo.';
+    } finally {
+      $('gateBtn').disabled = false; $('gateBtn').textContent = 'Ver resultados';
+    }
+  }
+
+  async function refresh() {
+    if (!chave) return;
+    try { votes = await fetchVotes(chave); render(); }
+    catch (e) { if (e.message === 'chave') logout(); else $('updatedAt').textContent = 'Sem conexão, tentando de novo…'; }
+  }
+
+  function logout() {
+    chave = null; votes = []; storeKey(null); clearInterval(timer);
+    $('panel').classList.add('hidden'); $('gate').classList.remove('hidden'); $('chave').value = ''; $('chave').focus();
+  }
+
+  function render() {
+    const total = votes.length;
+    const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Fortaleza', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    $('updatedAt').textContent = `Ao vivo · atualizado às ${now}`;
+
+    // contagem por nome
+    const byCand = CANDIDATES.map(c => ({ ...c, n: votes.filter(v => Number(v.candidate_id) === c.id).length }))
+                             .sort((a, b) => b.n - a.n || a.id - b.id);
+    const max = Math.max(1, ...byCand.map(c => c.n));
+
+    // KPIs
+    $('kTotal').textContent = total;
+    $('kTotalHint').textContent = total === 1 ? 'colaborador votou' : 'colaboradores votaram';
+    if (total && byCand[0].n > 0) {
+      const tie = byCand.filter(c => c.n === byCand[0].n);
+      $('kLeader').textContent = tie.length > 1 ? tie.map(c => c.name).join(' × ') : byCand[0].name;
+      $('kLeaderHint').textContent = tie.length > 1 ? `empate com ${byCand[0].n} voto(s) cada` : `${byCand[0].n} votos · ${Math.round(byCand[0].n / total * 100)}% do total`;
+    } else { $('kLeader').textContent = '—'; $('kLeaderHint').textContent = 'aguardando votos'; }
+    const unitsWith = new Set(votes.map(v => v.unidade));
+    $('kUnits').textContent = `${unitsWith.size}/${UNITS.length}`;
+    if (total) { $('kLast').textContent = ago(votes[0].created_at); $('kLastHint').textContent = `${esc(votes[0].unidade)} · ${fmt(votes[0].created_at)}`; }
+    else { $('kLast').textContent = '—'; $('kLastHint').innerHTML = '&nbsp;'; }
+
+    // ranking
+    $('ranking').innerHTML = byCand.map((c, i) => `
+      <div class="rank-item ${i === 0 && c.n > 0 ? 'first' : ''}">
+        <div class="rank-pos">${i + 1}º</div>
+        <div class="rank-name">${c.name}</div>
+        <div class="bar"><span style="width:${(c.n / max * 100).toFixed(1)}%;background:${c.color}"></span></div>
+        <div class="rank-num"><b>${c.n}</b><small>${total ? Math.round(c.n / total * 100) : 0}%</small></div>
+      </div>`).join('');
+
+    // por unidade
+    const allUnits = [...UNITS, ...[...unitsWith].filter(u => !UNITS.includes(u))];
+    const rows = allUnits.map(u => {
+      const vs = votes.filter(v => v.unidade === u);
+      return { u, total: vs.length, per: CANDIDATES.map(c => vs.filter(v => Number(v.candidate_id) === c.id).length) };
+    }).sort((a, b) => b.total - a.total || a.u.localeCompare(b.u, 'pt-BR'));
+    $('unitTable').innerHTML = `
+      <thead><tr><th>Unidade</th>${CANDIDATES.map(c => `<th class="num"><span class="dot" style="background:${c.color}"></span> ${c.name}</th>`).join('')}<th class="num">Total</th></tr></thead>
+      <tbody>${rows.map(r => `<tr class="${r.total ? '' : 'empty'}"><td>${esc(r.u)}</td>${r.per.map(n => `<td class="num ${n ? '' : 'zero'}">${n}</td>`).join('')}<td class="num total ${r.total ? '' : 'zero'}">${r.total}</td></tr>`).join('')}</tbody>`;
+
+    // filtros (preserva seleção)
+    const fu = $('fUnit'), fn = $('fName'), su = fu.value, sn = fn.value;
+    fu.innerHTML = '<option value="">Todas as unidades</option>' + allUnits.map(u => `<option ${u === su ? 'selected' : ''}>${esc(u)}</option>`).join('');
+    fn.innerHTML = '<option value="">Todos os nomes</option>' + CANDIDATES.map(c => `<option value="${c.id}" ${String(c.id) === sn ? 'selected' : ''}>${c.name}</option>`).join('');
+    renderList();
+  }
+
+  function filtered() {
+    const q = $('fSearch').value.trim().toLowerCase(), u = $('fUnit').value, n = $('fName').value;
+    return votes.filter(v => (!q || String(v.nome).toLowerCase().includes(q)) && (!u || v.unidade === u) && (!n || String(v.candidate_id) === n));
+  }
+
+  function renderList() {
+    const list = filtered();
+    if (!votes.length) {
+      $('voteRows').innerHTML = `<tr><td colspan="4"><div class="empty-state">Nenhum voto ainda. Assim que alguém votar, aparece aqui.</div></td></tr>`;
+      $('countNote').textContent = ''; return;
+    }
+    $('voteRows').innerHTML = list.length ? list.map(v => {
+      const c = cand(v.candidate_id);
+      const changed = new Date(v.updated_at) - new Date(v.created_at) > 2000;
+      return `<tr><td>${fmt(v.created_at)}</td><td>${esc(v.nome)}${changed ? '<span class="tag" title="Trocou o voto em ' + fmt(v.updated_at) + '">trocou o voto</span>' : ''}</td><td>${esc(v.unidade)}</td>
+              <td><span class="chip" style="background:${c.color}1a;color:${c.color}"><span class="dot" style="background:${c.color}"></span>${c.name}</span></td></tr>`;
+    }).join('') : `<tr><td colspan="4"><div class="empty-state">Nenhum voto com esses filtros.</div></td></tr>`;
+    $('countNote').textContent = `Mostrando ${list.length} de ${votes.length} voto(s).`;
+  }
+
+  function exportCsv() {
+    const list = filtered();
+    const head = ['Data e hora', 'Colaborador', 'Unidade', 'Nome escolhido', 'Trocou o voto em'];
+    const lines = list.map(v => {
+      const changed = new Date(v.updated_at) - new Date(v.created_at) > 2000;
+      return [fmt(v.created_at), v.nome, v.unidade, cand(v.candidate_id).name, changed ? fmt(v.updated_at) : '']
+        .map(x => `"${String(x).replace(/"/g, '""')}"`).join(';');
+    });
+    const csv = '﻿' + [head.join(';'), ...lines].join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = `votos-robo-mascote-nte-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  $('gateForm').addEventListener('submit', e => { e.preventDefault(); const k = $('chave').value.trim(); if (k) enter(k); });
+  $('btnRefresh').addEventListener('click', refresh);
+  $('btnCsv').addEventListener('click', exportCsv);
+  $('btnLogout').addEventListener('click', logout);
+  ['fSearch', 'fUnit', 'fName'].forEach(id => $(id).addEventListener('input', renderList));
+
+  const saved = loadKey();
+  if (saved) enter(saved, true); else $('chave').focus();
+</script>
+</body>
+</html>
